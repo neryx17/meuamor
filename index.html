@@ -706,6 +706,54 @@
     </style>
 </head>
 <body>
+    <!-- ===== TELA DE ENTRADA ===== -->
+    <div id="intro-overlay" style="
+        position: fixed; inset: 0; z-index: 100000;
+        background: radial-gradient(circle at center, #1a0a14 0%, #0a0a0a 70%, #000 100%);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 30px; text-align: center; padding: 20px;
+        transition: opacity 1s ease, visibility 1s ease;
+    ">
+        <div style="font-size: clamp(60px, 12vw, 110px); animation: introHeart 1.6s ease-in-out infinite;">💖</div>
+        <h1 style="
+            font-family: 'Poppins', sans-serif; font-weight: 800;
+            font-size: clamp(28px, 5vw, 48px); color: #fff; margin: 0;
+            background: linear-gradient(135deg, #ff0040, #ff1744, #ffd700);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; line-height: 1.2;
+        ">Uma surpresa especial<br>te espera, meu amor</h1>
+        <p style="
+            font-family: 'Poppins', sans-serif; color: #c0c0c0;
+            font-size: clamp(14px, 2.2vw, 18px); max-width: 480px; margin: 0;
+            font-weight: 300;
+        ">Coloque o som para a experiência completa 🎵</p>
+        <button id="intro-btn" style="
+            margin-top: 20px;
+            padding: 18px 50px;
+            font-family: 'Poppins', sans-serif; font-weight: 700;
+            font-size: clamp(16px, 2.5vw, 20px); letter-spacing: 2px;
+            color: #fff; text-transform: uppercase;
+            background: linear-gradient(135deg, #ff0040, #cc0033);
+            border: 2px solid #ff1744; border-radius: 50px;
+            cursor: pointer; outline: none;
+            box-shadow: 0 0 30px rgba(255, 0, 64, 0.6), 0 8px 24px rgba(0,0,0,0.5);
+            transition: transform .3s, box-shadow .3s;
+            animation: introPulse 2s ease-in-out infinite;
+        " onmouseover="this.style.transform='scale(1.08)'; this.style.boxShadow='0 0 50px rgba(255,0,64,0.9), 0 12px 32px rgba(0,0,0,0.6)';"
+           onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 0 30px rgba(255, 0, 64, 0.6), 0 8px 24px rgba(0,0,0,0.5)';">
+            ▶ Clique aqui
+        </button>
+        <style>
+            @keyframes introHeart { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+            @keyframes introPulse {
+                0%,100% { box-shadow: 0 0 30px rgba(255,0,64,0.6), 0 8px 24px rgba(0,0,0,0.5); }
+                50%     { box-shadow: 0 0 60px rgba(255,0,64,1), 0 8px 24px rgba(0,0,0,0.5); }
+            }
+            #intro-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+            #intro-overlay * { cursor: pointer !important; }
+        </style>
+    </div>
+
     <!-- Overlay de loading -->
     <div class="loading-overlay">
         <div class="loading-heart">❤️</div>
@@ -1412,6 +1460,52 @@
         document.head.appendChild(extraStyles);
 
         console.log('💖 Site de Amor carregado com sucesso! Feliz Dia dos Namorados! ✨');
+    </script>
+
+    <!-- ===== MÚSICA DE FUNDO (MP3 local) ===== -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="music/musica.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="music-toggle" aria-label="Tocar música" style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #ff0040;
+        background: rgba(17,17,17,0.85);
+        color: #fff;
+        font-size: 22px;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(255,0,64,0.5);
+        backdrop-filter: blur(8px);
+        transition: transform .2s, box-shadow .2s;
+    ">▶</button>
+
+    <script>
+        const audio = document.getElementById('bg-music');
+        audio.volume = 0.8;
+        const btn = document.getElementById('music-toggle');
+
+        audio.addEventListener('play',  () => btn.textContent = '⏸');
+        audio.addEventListener('pause', () => btn.textContent = '▶');
+
+        btn.addEventListener('click', () => {
+            if (audio.paused) audio.play();
+            else audio.pause();
+        });
+
+        // Botão de entrada: toca a música e some
+        const introOverlay = document.getElementById('intro-overlay');
+        const introBtn = document.getElementById('intro-btn');
+        introBtn.addEventListener('click', () => {
+            audio.play().catch(err => console.warn('Falha ao iniciar áudio:', err));
+            introOverlay.classList.add('hidden');
+            setTimeout(() => introOverlay.remove(), 1000);
+        });
     </script>
 </body>
 </html>
